@@ -32,4 +32,4 @@ class CLaTailComp(ExplicitComponent):
         b_t = inputs['b_t']
         F_t = 1.07*(1+d_fuse/b_t)**2
 
-        outputs['CLa'] = 2*np.pi*AR_t*((S_t*.9)/S_t)*F_t/(2 + np.sqrt(4 + AR_t**2*Beta**2/(neta_t**2)))
+        outputs['CLa_t'] = 2*np.pi*AR_t*((S_t*.9)/S_t)*F_t/(2 + np.sqrt(4 + AR_t**2*Beta**2/(neta_t**2)))
