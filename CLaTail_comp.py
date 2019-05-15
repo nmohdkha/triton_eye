@@ -14,7 +14,7 @@ class CLaTailComp(ExplicitComponent):
         self.add_input('S_t')
         self.add_input('d_fuse')
         self.add_input('b_t')
-        self.add_output('CLa')
+        self.add_output('CLa_t')
         self.declare_partials('AR_t','M','Cla_t','S_t','d_fuse','b_t','CLa_t',method='cs')
         # do I need to declare partials if the values are constant? e.g. Cla
         # b_wing, AR, and S are not independent of each other...better to calc one below and
