@@ -5,6 +5,7 @@ from CLaWing_comp import CLaWingComp
 from lg_weight_comp import LGWeightComp
 from tail_weight_comp import TailWeightComp
 from wing_weight_comp import WingWeightComp
+from wing_control_weight_comp import WingControlWeightComp
 
 
 prob = Problem()
@@ -37,9 +38,10 @@ prob.model.add_subsystem('Aerodynamics', group)
 
 ## WEIGHTS GROUP
 group = Group()
-group.add_subsystem('W_lg',         LGWeightComp())
-group.add_subsystem('W_tail',       TailWeightComp())
-group.add_subsystem('W_wing',       WingWeightComp())
+group.add_subsystem('W_lg',           LGWeightComp())
+group.add_subsystem('W_tail',         TailWeightComp())
+group.add_subsystem('W_wing',         WingWeightComp())
+group.add_subsystem('W_wing_control', WingControlWeightComp())
 prob.model.add_subsystem('Weights', group)
 
 prob.model.connect("ivc.AR",        "Aerodynamics.cla_wing.AR")
@@ -56,14 +58,14 @@ prob.model.connect("ivc.d_fuse_t",  "Aerodynamics.cla_tail.d_fuse_t")
 prob.model.connect("ivc.b_t",       "Aerodynamics.cla_tail.b_t")
 prob.model.connect("ivc.W_0",       "Weights.W_lg.W_0")
 prob.model.connect("ivc.S_t",       "Weights.W_tail.S_t")
-
-prob.model.connect("ivc.S",       "Weights.W_wing.S")
-prob.model.connect("ivc.AR",       "Weights.W_wing.AR")
-prob.model.connect("ivc.q",       "Weights.W_wing.q")
-prob.model.connect("ivc.taper",       "Weights.W_wing.taper")
+prob.model.connect("ivc.S",         "Weights.W_wing.S")
+prob.model.connect("ivc.AR",        "Weights.W_wing.AR")
+prob.model.connect("ivc.q",         "Weights.W_wing.q")
+prob.model.connect("ivc.taper",     "Weights.W_wing.taper")
 prob.model.connect("ivc.thickness_ratio",       "Weights.W_wing.thickness_ratio")
-prob.model.connect("ivc.n",       "Weights.W_wing.n")
+prob.model.connect("ivc.n",         "Weights.W_wing.n")
 prob.model.connect("ivc.W_0",       "Weights.W_wing.W_0")
+prob.model.connect("ivc.W_0",       "Weights.W_wing_control.W_0")
 
 
 group.nonlinear_solver = NonlinearBlockGS(iprint=2, maxiter=30)
@@ -78,3 +80,4 @@ prob.run_model()
 # TO VISUALIZE: 'openmdao view_model run.py'
 
 view_model(prob)
+
