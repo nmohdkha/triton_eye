@@ -4,6 +4,7 @@ from CLaTail_comp import CLaTailComp
 from CLaWing_comp import CLaWingComp
 from lg_weight_comp import LGWeightComp
 from tail_weight_comp import TailWeightComp
+from wing_weight_comp import WingWeightComp
 
 
 prob = Problem()
@@ -22,6 +23,10 @@ comp.add_output('d_fuse_t', val=2.)
 comp.add_output('b',        val=150)
 comp.add_output('b_t',      val=15)
 comp.add_output('W_0',      val=18000)
+comp.add_output('q',        val = 46)
+comp.add_output('taper',    val = 0.4) ## wing taper ratio
+comp.add_output('thickness_ratio',val = 0.12)
+comp.add_output('n',        val = 2)
 prob.model.add_subsystem('ivc', comp)
 
 ## AERODYNAMICS GROUP
@@ -34,6 +39,7 @@ prob.model.add_subsystem('Aerodynamics', group)
 group = Group()
 group.add_subsystem('W_lg',         LGWeightComp())
 group.add_subsystem('W_tail',       TailWeightComp())
+group.add_subsystem('W_wing',       WingWeightComp())
 prob.model.add_subsystem('Weights', group)
 
 prob.model.connect("ivc.AR",        "Aerodynamics.cla_wing.AR")
@@ -50,6 +56,15 @@ prob.model.connect("ivc.d_fuse_t",  "Aerodynamics.cla_tail.d_fuse_t")
 prob.model.connect("ivc.b_t",       "Aerodynamics.cla_tail.b_t")
 prob.model.connect("ivc.W_0",       "Weights.W_lg.W_0")
 prob.model.connect("ivc.S_t",       "Weights.W_tail.S_t")
+
+prob.model.connect("ivc.S",       "Weights.W_wing.S")
+prob.model.connect("ivc.AR",       "Weights.W_wing.AR")
+prob.model.connect("ivc.q",       "Weights.W_wing.q")
+prob.model.connect("ivc.taper",       "Weights.W_wing.taper")
+prob.model.connect("ivc.thickness_ratio",       "Weights.W_wing.thickness_ratio")
+prob.model.connect("ivc.n",       "Weights.W_wing.n")
+prob.model.connect("ivc.W_0",       "Weights.W_wing.W_0")
+
 
 group.nonlinear_solver = NonlinearBlockGS(iprint=2, maxiter=30)
 
