@@ -7,6 +7,7 @@ from tail_weight_comp import TailWeightComp
 from wing_weight_comp import WingWeightComp
 from wing_control_weight_comp import WingControlWeightComp
 from gross_weight_comp import GrossWeightComp
+from wing_param_comp import WingParamComp
 
 prob = Problem()
 
@@ -28,12 +29,14 @@ comp.add_output('q',        val = 46)
 comp.add_output('taper',    val = 0.4) ## wing taper ratio
 comp.add_output('thickness_ratio',val = 0.12)
 comp.add_output('n',        val = 2)
+comp.add_output('croot',        val = 8.8)
 prob.model.add_subsystem('ivc', comp)
 
 ## AERODYNAMICS GROUP
 group = Group()
 group.add_subsystem('cla_wing',     CLaWingComp())
 group.add_subsystem('cla_tail',     CLaTailComp())
+group.add_subsystem('wing_param',   WingParamComp())
 prob.model.add_subsystem('Aerodynamics', group)
 
 ## WEIGHTS GROUP
@@ -57,6 +60,9 @@ prob.model.connect("ivc.Cla_t",     "Aerodynamics.cla_tail.Cla_t")
 prob.model.connect("ivc.S_t",       "Aerodynamics.cla_tail.S_t")
 prob.model.connect("ivc.d_fuse_t",  "Aerodynamics.cla_tail.d_fuse_t")
 prob.model.connect("ivc.b_t",       "Aerodynamics.cla_tail.b_t")
+prob.model.connect("ivc.b",         "Aerodynamics.wing_param.b")
+prob.model.connect("ivc.taper",     "Aerodynamics.wing_param.taper")
+prob.model.connect("ivc.croot",     "Aerodynamics.wing_param.croot")
 prob.model.connect("ivc.W_0",       "Weights.W_lg.W_0")
 prob.model.connect("ivc.S_t",       "Weights.W_tail.S_t")
 prob.model.connect("ivc.S",         "Weights.W_wing.S")
